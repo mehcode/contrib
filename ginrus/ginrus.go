@@ -30,18 +30,19 @@ func Ginrus(logger *logrus.Logger, timeFormat string, utc bool) gin.HandlerFunc 
 		if utc {
 			end = end.UTC()
 		}
-
+	
+                status := c.Writer.Status()
 		entry := logger.WithFields(logrus.Fields{
-			"status":     c.Writer.Status(),
+			"status":     status,
 			"method":     c.Request.Method,
 			"path":       path,
 			"ip":         c.ClientIP(),
 			"latency":    latency,
-			"user-agent": c.Request.UserAgent(),
+			// "user-agent": c.Request.UserAgent(),
 			"time":       end.Format(timeFormat),
 		})
 
-		if len(c.Errors) > 0 {
+		if len(c.Errors) > 0 || status >= 500 {
 			// Append error field if this is an erroneous request.
 			entry.Error(c.Errors.String())
 		} else {
