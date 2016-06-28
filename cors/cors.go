@@ -124,7 +124,7 @@ func New(config Config) gin.HandlerFunc {
 }
 
 func handlePreflight(c *gin.Context, s *settings) bool {
-	c.AbortWithStatus(200)
+	c.Status(200)
 	if !s.validateMethod(c.Request.Header.Get("Access-Control-Request-Method")) {
 		return false
 	}
